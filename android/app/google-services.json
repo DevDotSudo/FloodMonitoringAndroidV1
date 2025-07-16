@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257292082474",
+    "project_id": "capstone-flood-monitoring",
+    "storage_bucket": "capstone-flood-monitoring.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257292082474:android:7a4bc79c82b9f517715253",
+        "android_client_info": {
+          "package_name": "com.capstone.flood_monitoring_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmsvFSEBxkV1Zn2vjW1oGI1KcM0y_UdT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
