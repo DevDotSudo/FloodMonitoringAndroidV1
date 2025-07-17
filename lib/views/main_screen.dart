@@ -35,8 +35,8 @@ class _MainScreenState extends State<MainScreen> {
           'Flood Monitoring', 
           style: TextStyle(
             color: Colors.white, 
-            fontWeight: FontWeight.w700,
-            fontSize: 28,
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
             ),
           ),
         backgroundColor: Color(0xFF3F51B5), // Matches the dark background
@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Color(0xFF7B91FF), // A lighter blue/purple for selected, from login button
-        unselectedItemColor: Colors.white54, // Lighter gray for unselected
+        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255), // Lighter gray for unselected
         onTap: _onItemTapped,
         backgroundColor:  Color(0xFF3F51B5), // Matches the dark background
         type: BottomNavigationBarType.fixed, // Ensures all items are visible
