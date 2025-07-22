@@ -7,4 +7,8 @@ class PhoneSubscriberController {
   Future<void> registerSubscriber(AppSubscriber phoneSubs) async {
     await _subscriberService.registerSubscriber(phoneSubs.toMap());
   }
+
+  Future<void> loginSubscriber(AppSubscriber phoneLogin) async {
+    await _subscriberService.loginSubscriber(phoneLogin.toCredentialsMap());
+  }
 }

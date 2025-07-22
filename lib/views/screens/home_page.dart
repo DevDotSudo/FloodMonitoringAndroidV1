@@ -12,17 +12,10 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Welcome Section with better spacing
           _buildWelcomeSection(),
-          
           const SizedBox(height: 24),
-          
-          // Status Cards with improved layout
           _buildStatusCards(),
-          
           const SizedBox(height: 24),
-          
-          // Water Level Chart Section
           _buildChartSection(),
         ],
       ),
@@ -64,7 +57,6 @@ class HomePage extends StatelessWidget {
   Widget _buildStatusCards() {
     return Column(
       children: [
-        // First row with River Status and Water Level
         Row(
           children: [
             Expanded(
@@ -94,8 +86,6 @@ class HomePage extends StatelessWidget {
         ),
         
         const SizedBox(height: 16),
-        
-        // Bridge status card - full width
         _buildStatusCard(
           icon: Icons.check_circle_rounded,
           iconColor: Colors.green.shade600,

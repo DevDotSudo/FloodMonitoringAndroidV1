@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flood_monitoring_android/auth/google_signin.dart';
-import 'package:flood_monitoring_android/constants/app_colors.dart';
+import 'package:flood_monitoring_android/controller/phone_subscriber_controller.dart';
+import 'package:flood_monitoring_android/model/app_subscriber.dart';
 import 'package:flood_monitoring_android/views/main_screen.dart';
 import 'package:flood_monitoring_android/views/screens/register_form.dart';
+import 'package:flood_monitoring_android/views/widgets/message_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +17,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _phoneSubscriberController = PhoneSubscriberController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _googleSignin = GoogleFirebaseSignin();
   bool _rememberMe = false;
@@ -30,8 +35,43 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> login () async {
+  Future<void> login() async {
+    try {
+      final phoneLogin = AppSubscriber.credentials(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+      await _phoneSubscriberController.loginSubscriber(phoneLogin);
+      if (!mounted) return;
+      await _showSuccessDialog();
+    } catch (e) {
+      if (!mounted) return;
+      await _showErrorDialog();
+    }
+  }
 
+  Future<void> _showSuccessDialog() async {
+    await MessageDialog.show(
+      context: context,
+      title: 'Login Successful',
+      message: 'Your account has been login successfully.',
+      onPressed: () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => MainScreen()),
+      ),
+    );
+  }
+
+  Future<void> _showErrorDialog() async {
+    await MessageDialog.show(
+      context: context,
+      title: 'Login Failed',
+      message: 'Incorrect username or password. Please try again.',
+      onPressed: () => {
+        _emailController.clear(),
+        _passwordController.clear(),
+        Navigator.pop(context),
+      }
+    );
   }
 
   @override
@@ -48,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryBackground,
+                  color: Color(0xFF3F51B5),
                   spreadRadius: 3,
                   blurRadius: 7,
                   offset: const Offset(0, 3),
@@ -61,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(18.0),
                   decoration: const BoxDecoration(
-                    color: AppColors.primaryBackground,
+                    color: Color(0xFF3F51B5),
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Column(
@@ -132,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                             filled: true,
                             fillColor: const Color(
                               0xFFF5F5F5,
-                            ), // Light grey background
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
                               borderSide: const BorderSide(

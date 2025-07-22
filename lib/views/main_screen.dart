@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
             fontSize: 22,
             ),
           ),
-        backgroundColor: Color(0xFF3F51B5), // Matches the dark background
+        backgroundColor: Color(0xFF3F51B5), 
         ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -58,11 +58,11 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFF7B91FF), // A lighter blue/purple for selected, from login button
-        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255), // Lighter gray for unselected
+        selectedItemColor: Color(0xFF7B91FF),
+        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255), 
         onTap: _onItemTapped,
-        backgroundColor:  Color(0xFF3F51B5), // Matches the dark background
-        type: BottomNavigationBarType.fixed, // Ensures all items are visible
+        backgroundColor:  Color(0xFF3F51B5),
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
