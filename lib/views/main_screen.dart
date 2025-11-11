@@ -13,10 +13,10 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    HomePage(), 
-    WeatherPage(), 
-    ProfilePage(), 
+  static final List<Widget> _widgetOptions = [
+    const HomePage(),
+    const WeatherPage(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -28,41 +28,66 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
         title: const Text(
-          'Flood Monitoring', 
+          'Flood Monitoring',
           style: TextStyle(
-            color: Colors.white, 
-            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            fontWeight: FontWeight.w700,
             fontSize: 22,
-            ),
           ),
-        backgroundColor: Color(0xFF3F51B5), 
         ),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      ),
+      body: _widgetOptions[_selectedIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, -1),
+            ),
+          ],
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud), // Weather icon
-            label: 'Weather',
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          child: BottomNavigationBar(
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.cloud_outlined),
+                label: 'Weather',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.deepPurple,
+            unselectedItemColor: Colors.grey,
+            onTap: _onItemTapped,
+            backgroundColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
           ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFF7B91FF),
-        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255), 
-        onTap: _onItemTapped,
-        backgroundColor:  Color(0xFF3F51B5),
-        type: BottomNavigationBarType.fixed,
+        ),
       ),
     );
   }

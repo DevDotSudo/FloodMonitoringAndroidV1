@@ -7,8 +7,9 @@ class AppSubscriber {
   final String age;
   final String phoneNumber;
   final String? password;
-  final String registeredDate;
+  final String? registeredDate;
   final String viaSMS;
+  final String viaApp;
 
   AppSubscriber({
     required this.id,
@@ -19,35 +20,10 @@ class AppSubscriber {
     required this.age,
     required this.phoneNumber,
     this.password,
-    required this.registeredDate,
+    this.registeredDate,
     required this.viaSMS,
+    required this.viaApp,
   });
-
-  AppSubscriber.credentials({
-    this.email,
-    this.password,
-  })  : id = '',
-        fullName = '',
-        address = '',
-        gender = '',
-        age = '',
-        phoneNumber = '',
-        registeredDate = '',
-        viaSMS = '';
-  
-  factory AppSubscriber.fromCredentialsMap(Map<String, dynamic> map) {
-    return AppSubscriber.credentials(
-      email: map['email'],
-      password: map['password'],
-    );
-  }
-
-  Map<String, dynamic> toCredentialsMap() {
-    return {
-      'email': email,
-      'password': password,
-    };
-  }
 
   factory AppSubscriber.fromMap(Map<String, dynamic> subscriber) {
     return AppSubscriber(
@@ -61,6 +37,7 @@ class AppSubscriber {
       password: subscriber['password'] ?? '',
       registeredDate: subscriber['registeredDate'] ?? '',
       viaSMS: subscriber['viaSMS'] ?? '',
+      viaApp: subscriber['viaApp'] ?? '',
     );
   }
 
@@ -76,6 +53,7 @@ class AppSubscriber {
       'password': password,
       'registeredDate': registeredDate,
       'viaSMS': viaSMS,
+      'viaApp': viaApp,
     };
   }
 }

@@ -30,6 +30,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String? selectedGender;
   final List<String> _genderOptions = ['Male', 'Female', 'Other'];
 
+  // --- ADDED: State variable to track loading status ---
+  bool _isLoading = false;
+
   @override
   void dispose() {
     _fullNameController.dispose();
@@ -44,6 +47,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> submitForm() async {
     if (!_formKey.currentState!.validate()) return;
+    
+    // --- MODIFIED: Set loading state to true before registration ---
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       final uuid = Uuid();
       final phoneSubs = AppSubscriber(
@@ -56,10 +65,11 @@ class _RegisterPageState extends State<RegisterPage> {
         phoneNumber: _phoneNumberController.text.trim(),
         password: _confirmPasswordController.text.trim(),
         registeredDate: DateFormat(
-            'MMMM d, yyyy - h:mm a',
-          ).format(DateTime.now()),
+          'MMMM d, yyyy - h:mm a',
+        ).format(DateTime.now()),
         viaSMS: 'No',
-        );
+        viaApp: 'Yes',
+      );
 
       await _phoneSubscriberController.registerSubscriber(phoneSubs);
       if (!mounted) return;
@@ -67,6 +77,13 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {
       if (!mounted) return;
       await _showErrorDialog();
+    } finally {
+      // --- MODIFIED: Ensure loading state is turned off after completion ---
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -122,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(18.0),
                   decoration: const BoxDecoration(
-                    color: Color(0xFF3F51B5),
+                    color: AppColors.primaryBackground,
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Column(
@@ -143,12 +160,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 16.0),
                       const Text(
-                        'Real-time water level monitoring and alert system for subscribers',
+                        'Banate MDRRMO \nFlood Monitoring System',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          height: 1.4,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accentBlue,
+                          fontSize: 18.0,
+                          height: 1.4, // Line height
                         ),
                       ),
                     ],
@@ -631,12 +649,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         SizedBox(
                           width: double.infinity,
+                          // --- MODIFIED: Register Button with loading animation ---
                           child: ElevatedButton(
-                            onPressed: submitForm,
+                            onPressed: _isLoading ? null : submitForm,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(
-                                0xFF3F51B5,
-                              ), // Blue button
+                              backgroundColor: AppColors.accentBlue,
                               padding: const EdgeInsets.symmetric(
                                 vertical: 12.0,
                               ),
@@ -646,14 +663,23 @@ class _RegisterPageState extends State<RegisterPage> {
                               shadowColor: Colors.black.withOpacity(0.2),
                               elevation: 4,
                             ),
-                            child: const Text(
-                              'REGISTER',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 24.0,
+                                    width: 24.0,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 3,
+                                    ),
+                                  )
+                                : const Text(
+                                    'REGISTER',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 16.0),
@@ -670,14 +696,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                 TextSpan(
                                   text: 'Login',
                                   style: const TextStyle(
-                                    color: Color(0xFF3F51B5),
+                                    color: AppColors.accentBlue,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (_) => LoginPage()),
+                                        MaterialPageRoute(
+                                            builder: (_) => LoginPage()),
                                       );
                                     },
                                 ),
