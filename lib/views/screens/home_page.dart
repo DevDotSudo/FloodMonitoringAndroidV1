@@ -123,8 +123,8 @@ class _HomePage extends State<HomePage> {
               child: _buildMetricCard(
                 icon: Icons.warning_rounded,
                 iconColor: _getStatusColor(status),
-                label: 'River Status',
-                value: status,
+                label: 'MDRRMO Marking Guide',
+                value: '$status ${(currentLevel - 8.0).toStringAsFixed(2)}',
                 bgColor: _getStatusColor(status).withOpacity(0.08),
               ),
             ),

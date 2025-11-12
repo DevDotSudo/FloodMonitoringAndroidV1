@@ -32,8 +32,6 @@ class WaterLevelGraph extends StatelessWidget {
       );
     }
 
-    final maxY = data.map((e) => e.level).reduce((a, b) => a > b ? a : b) * 1.2;
-
     final status = waterLevelDataController.riverStatus;
 
     final lineColor = status == "Normal"
@@ -51,7 +49,7 @@ class WaterLevelGraph extends StatelessWidget {
               const TextStyle(color: Colors.white),
               children: [
                 TextSpan(
-                  text: '${spot.y.toStringAsFixed(1)}f',
+                  text: '${spot.y.toStringAsFixed(1)}ft',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -86,6 +84,7 @@ class WaterLevelGraph extends StatelessWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
+            interval: _calculateBottomInterval(data.length),
             getTitlesWidget: (value, meta) {
               final index = value.toInt();
               if (index < 0 || index >= data.length) {
@@ -126,7 +125,7 @@ class WaterLevelGraph extends StatelessWidget {
       minX: 0,
       maxX: data.length.toDouble() - 1,
       minY: 0,
-      maxY: maxY < 30 ? 30 : maxY,
+      maxY: 30,
       lineBarsData: [
         LineChartBarData(
           spots: data
@@ -145,5 +144,12 @@ class WaterLevelGraph extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  double _calculateBottomInterval(int dataLength) {
+    if (dataLength <= 8) return 1;
+    if (dataLength <= 12) return 2;
+    if (dataLength <= 24) return 3;
+    return (dataLength / 6).ceilToDouble();
   }
 }

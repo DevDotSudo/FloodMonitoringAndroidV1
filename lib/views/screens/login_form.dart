@@ -76,8 +76,18 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted && user != null) {
         _sharedPref.saveGoogleSignIn(user.email!);
         bool? filledUp = await _sharedPref.isFillup();
+        bool? emailExist = await _googleSignin.isEmailExist(user.uid);
 
         if (filledUp == true) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => MainScreen()),
+          );
+          return;
+        }
+
+        if (emailExist == true ) {
+          await _sharedPref.saveFillup();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => MainScreen()),
