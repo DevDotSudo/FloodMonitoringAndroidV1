@@ -1,7 +1,8 @@
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        mavenCentral()  // keep this
+        // Removed JitPack to avoid Flutter AAR download errors
     }
 }
 
@@ -12,6 +13,7 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

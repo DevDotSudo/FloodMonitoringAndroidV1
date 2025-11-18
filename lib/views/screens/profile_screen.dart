@@ -318,93 +318,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showChangePasswordDialog() {
-  final currentPasswordController = TextEditingController();
-  final newPasswordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Change Password'),
-      content: Form(
-        key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: currentPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Current Password'),
-              validator: (val) => val == null || val.isEmpty
-                  ? 'Enter your current password'
-                  : null,
-            ),
-            TextFormField(
-              controller: newPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'New Password'),
-              validator: (val) => val != null && val.length < 6
-                  ? 'Password must be at least 6 chars'
-                  : null,
-            ),
-            TextFormField(
-              controller: confirmPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Confirm Password'),
-              validator: (val) => val != newPasswordController.text
-                  ? 'Passwords do not match'
-                  : null,
-            ),
-          ],
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change Password'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: currentPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Current Password',
+                ),
+                validator: (val) => val == null || val.isEmpty
+                    ? 'Enter your current password'
+                    : null,
+              ),
+              TextFormField(
+                controller: newPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'New Password'),
+                validator: (val) => val != null && val.length < 6
+                    ? 'Password must be at least 6 chars'
+                    : null,
+              ),
+              TextFormField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                ),
+                validator: (val) => val != newPasswordController.text
+                    ? 'Passwords do not match'
+                    : null,
+              ),
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: const Text('Change'),
+            onPressed: () async {
+              if (!formKey.currentState!.validate()) return;
+
+              try {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user == null) return;
+
+                final cred = EmailAuthProvider.credential(
+                  email: user.email!,
+                  password: currentPasswordController.text.trim(),
+                );
+                await user.reauthenticateWithCredential(cred);
+
+                await user.updatePassword(newPasswordController.text.trim());
+
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Password changed successfully'),
+                    ),
+                  );
+                }
+              } on FirebaseAuthException catch (e) {
+                String msg = 'Failed to change password';
+                if (e.code == 'wrong-password') {
+                  msg = 'The current password is incorrect';
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(msg)));
+                }
+              }
+            },
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          child: const Text('Change'),
-          onPressed: () async {
-            if (!formKey.currentState!.validate()) return;
-
-            try {
-              final user = FirebaseAuth.instance.currentUser;
-              if (user == null) return;
-
-              final cred = EmailAuthProvider.credential(
-                email: user.email!,
-                password: currentPasswordController.text.trim(),
-              );
-              await user.reauthenticateWithCredential(cred);
-
-              await user.updatePassword(newPasswordController.text.trim());
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Password changed successfully')),
-                );
-              }
-            } on FirebaseAuthException catch (e) {
-              String msg = 'Failed to change password';
-              if (e.code == 'wrong-password') {
-                msg = 'The current password is incorrect';
-              }
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(msg)),
-                );
-              }
-            }
-          },
-        ),
-      ],
-    ),
-  );
-}
-
+    );
+  }
 
   Future<void> _reauthenticateAndDelete(User user) async {
     try {
